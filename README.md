@@ -14,10 +14,13 @@
     - [Create React App](#create-react-app)
   - [calculator Back-end](#calculator-back-end)
     - [What is `restbed`](#what-is-restbed)
-    - [Install `restbed`](#install-restbed)
+    - [What is `JSON library for modern C++`](#what-is-json-library-for-modern-c)
     - [What is `cmake`](#what-is-cmake)
+    - [Install `restbed`](#install-restbed)
+    - [Install `JSON library for modern C++`](#install-json-library-for-modern-c)
+    - [Install a C++ compiler](#install-a-c-compiler)
     - [Install `cmake`](#install-cmake)
-    - [Create calculator API application](#create-calculator-api-application)
+    - [Create calculator web API application](#create-calculator-web-api-application)
     - [build calculator Back-end](#build-calculator-back-end)
 
 ## Introduction
@@ -831,12 +834,28 @@ calculator back-end section.
 
 ## calculator Back-end
 
-We've going to use `restbed` C++ framework to implement calculator API.  
+We're going to use `restbed` C++ framework to implement calculator web API.  
 
 ### What is `restbed`
 
-`restbed` is a C++11 framework which enables you to implement RESTful APIs. For
-further information visit [it's page](https://github.com/Corvusoft/restbed).  
+`restbed` is a C++11 framework which enables us to implement RESTful web APIs.  
+We're going to implement calculator web API in the form of a JSON web API. So we
+need a C++ JSON Library. There are a lot of JSON libraries, We’ve selected
+`JSON library for modern C++`.
+
+### What is `JSON library for modern C++`
+
+It's a single header JSON library for C++ programming language. It's a single
+header JSON library for C++ programming language. You’ll see It has an intuitive
+syntax.  
+Also we need a cross platform build system which enables us to build calculator
+web API. We’re going to use cmake as a build system.  
+
+### What is `cmake`
+
+`cmake` is a cross-platform, open-source build system. `cmake` is used to build
+test and package `C++` software on many platforms like `Windows`, `Linux` and
+`mac`.  
 
 ### Install `restbed`
 
@@ -851,11 +870,16 @@ sudo apt install librestbed-dev
 Otherwise you can build and install it through `cmake`, read `restbed`
 [documentation for details](https://github.com/Corvusoft/restbed).  
 
-### What is `cmake`
+### Install `JSON library for modern C++`
 
-`cmake` is a cross-platform, open-source build system. `cmake` is used to build
-test and package C++ software.  
-We're going to use `cmake` to build calculator API.  
+`JSON library for modern C++` is a single header library. Download it's header
+file through [this link](https://github.com/nlohmann/json).
+
+### Install a C++ compiler
+
+`C++` codes need to compile. So we need a `C++` compiler.  
+If you have a linux machine, you might have `GCC`.  Also you can install
+`Visual C++` for `Windows` or `clang` for `mac os`.
 
 ### Install `cmake`
 
@@ -866,7 +890,7 @@ to install `cmake`:
 
 Otherwise you can install it through [this link](https://cmake.org/download/).  
 
-### Create calculator API application
+### Create calculator web API application
 
 Create new directory in the `web_api_with_cpp` directory called
 `calculator_back-end`:  
