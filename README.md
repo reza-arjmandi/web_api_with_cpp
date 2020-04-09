@@ -900,148 +900,322 @@ cd ..
 mkdir calculator_back-end
 ```
 
-Now create `calculator_back-end/calculator_API.cpp` file and implement an empty
-`main` function:  
+The fundamental concept in any RESTful API is the resource. A resource is an
+object with a type, associated data, relationships to other resources, and a set
+of methods that operate on it. It is similar to an object instance in an
+object-oriented programming language, with the important difference that only a
+few standard methods are defined for the resource (corresponding to the standard
+HTTP GET, POST, PUT and DELETE methods), while an object instance typically has
+many methods. We can consider the calculator API as a resource.  
+`restbed` framework has a class called `Resource`. `Resource` class helps us to
+implement resources in our RESTful API. For each resource we must declare an
+object from the `Resource` class, and then implement methods of resource which
+we need, and then bind these methods to the resource object. We're going to do
+this stuff through a class. First, let's implement an interface for this class.  
+Create `calculator_back-end/include` directory:  
+
+```sh
+cd calculator_back-end
+mkdir include
+```
+
+Now create new `C++` header file in `include` directory called
+`IResourceFactory.h`:  
 
 ```C++
-#include <memory>
-#include <cstdlib>
-#include <string>
+#pragma once
 
+#include <memory>
 #include <restbed>
 
 using namespace std;
 using namespace restbed;
 
-int main(int argc, char** argv)
-{
+class IResourceFactory {
 
-  return 0;
-}
+public:
+
+    virtual shared_ptr<Resource> get_resource() const = 0;
+
+};
 ```
 
-We've included `restbed` library and also some other standard library which is
-needed to implement calculator_API application.  
-`restbed` framework has a class called `Resource`. `Resource` class helps us to
-implement and publish API functionalities.  
-Now create a `Resource` object for calculator functionality:  
+We've created an `include` directory in order to place all `C++` header files
+inside it. Then we've implemented a class called `IResourceFactory`. The `I`
+letter in front of its name stands for interface, which means `IResourceFactory`
+is an interface class and all it's functions are abstract functions. Every
+resource factory class must implement this interface.
+This interface has an abstract function called `get_resource`. Every resource
+factory concrete class must prepare resource and finally deliver to the its
+customer through `get_resource` function, in more details means concrete classes
+must create an object from `Resource` class and then implement all functions
+which it needs then bind functions to the `Resource` object and finally return
+`Resource` object in the `get_resource` function.  
+Now Let's create a `CalcResourceFactory` class. Create
+`include/CalcResourceFactory.h` file:  
 
 ```C++
-int main(const int, const char**)
-{
-  auto calc_resource = make_shared<Resource>();
-  return 0;
-}
+#pragma once
+
+#include "IResourceFactory.h"
+
+class CalcResourceFactory : public IResourceFactory {
+
+public:
+
+  CalcResourceFactory();
+  shared_ptr<Resource> get_resource() const final;
+
+private:
+
+  shared_ptr<Resource> _resource;
+
+};
 ```
 
-We've create an object from `Resource` class called `calc_resource`.  
-Every resource in RESTful APIs must associate with an url. We can associate an
-url to `calc_resource` through `set_path` function:  
+We've declared new a class which implements `IResourceFactory` interface called
+`CalcResourceFactory`, this class has a constructor function and also a member
+object called `_resource`. Its member object is a `shared_pointer` from
+`Resource` class. We've said every resource factory must prepare an object from
+the `Resource` class and then deliver it through the `get_resource` function.  
+Now, Let's implement it's constructor. Create new `CalcResourceFactory.cpp`
+source file (Note: create source files inside calculator_back-end directory) as
+follows:  
 
 ```C++
-  calc_resource->set_path(
-    "/{operation: add|subtract|multiply|divide}"
-    "/{num1: [-+]?[0-9]*\\.?[0-9]*}"
-    "/{num2: [-+]?[0-9]*\\.?[0-9]*}");
-```
+#include "CalcResourceFactory.h"
 
-We've set an url to `calc_resource` object through `set_path` function. This url
-has three part:  
-
-* `operation`
-* `num1`
-* `num2`
-
-It means we can reach to the `calc_resource` through an url like this:  
-`/add/2/3`  
-
-We've used regular expression syntax in order to filter each part of the url.
-`operation` part must accept only `add`, `subtract`, `multiply` and `divide`
-parameters which specify the calculator functionality. `num1` and `num2`
-must accept only float or integral numbers which specify calculator
-functionality operands.  
-Every `Resource` object must have a handler which is called when resource is
-requested by a client. We can set handler of `Resource` object through
-`set_method_handler` function:  
-
-```C++
-void calc_handler(const shared_ptr<Session> session)
-{
-}
-
-int main(const int, const char**)
-{
-  auto calc_resource = make_shared<Resource>();
-  calc_resource->set_path(
+CalcResourceFactory::CalcResourceFactory() {
+  _resource = make_shared<Resource>();
+  _resource->set_path(
       "/{operation: add|subtract|multiply|divide}"
       "/{num1: [-+]?[0-9]*\\.?[0-9]*}"
       "/{num2: [-+]?[0-9]*\\.?[0-9]*}");
-  calc_resource->set_method_handler("GET", calc_handler);
-  
-  return 0;
 }
 ```
 
-We've set `calc_handler` to `calc_resource` object as a handler.
-`set_method_handler` gets two arguments, first argument specifies `http` method
-and second argument specifies function handler. Every time `calc_resource` is
-requested `calc_handler` is called and an object is passed to the handler called
-`session`. Through the `session` object we can get any information about
-requests and send results to the client:  
+We've initialized `_resource` object to a newly allocated `shared_pointer`
+from `Resource` class. Every resource in RESTful APIs must associate with an
+url. We've associated an url to `_resource` object through `set_path` function.  
+This url has three parts, we've labeled each part with following labels:
+
+- `operation`
+- `num1`
+- `num2`
+
+You'll see we can read each part of the path through these labels.  
+We can reach to the resource through an url like this:  
+`/add/2/3`  
+
+We've used regular expression syntax in order to filter each part of the url.
+`operation` part must accept only `add` or `subtract` or `multiply` or `divide`
+parameters which specify the calculator functionality. `num1` and `num2` parts
+must accept only float or integral numbers which specify calculator
+functionality operands.  
+Every `Resource` object must have a handler which is called when resource is
+requested by a client.  
+We can set method handler of `Resource` object through `set_method_handler` function:  
+
+`CalcResourceFactory.h`:
 
 ```C++
-void calc_handler(const shared_ptr<Session> session)
-{
+class CalcResourceFactory : public IResourceFactory {
+
+  // ...
+
+private:
+
+  void get_handler(const shared_ptr<Session> session);
+
+  //...
+};
+```
+
+`CalcResourceFactory.cpp`:
+
+```C++
+CalcResourceFactory::CalcResourceFactory() {
+  //...
+
+  _resource->set_method_handler("GET",
+        [&](const auto session) {
+            get_handler(session);
+        });
+}
+
+void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
+}
+```
+
+We've set `get_handler` function to `_resource` object as a method handler.
+`set_method_handler` gets two arguments, first argument specifies `http` method
+and second argument specifies function handler. Every time `_resource` is
+requested `get_handler` is called and an object is passed to the handler called
+`session`. Through the `session` object we can get any information about
+requests and send results to the client.  
+Now, Let's implement `get_handler` function:  
+
+`CalcResourceFactory.h`:
+
+```C++
+//...
+
+#include <string>
+#include <tuple>
+
+class CalcResourceFactory : public IResourceFactory {
+
+  //...
+
+private:
+
+  tuple<float, float, string>
+    get_path_parameters(const shared_ptr<Session> session) const;
+
+  //...
+};
+```
+
+`CalcResourceFactory.cpp`:
+
+```C++
+tuple<float, float, string> CalcResourceFactory::get_path_parameters(
+        const shared_ptr<Session> session) const {
     const auto& request = session->get_request();
     const auto operation = request->get_path_parameter("operation");
     auto num1 = atof(request->get_path_parameter("num1").c_str());
     auto num2 = atof(request->get_path_parameter("num2").c_str());
+    return make_tuple(num1, num2, operation);
+}
+
+void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
+  const auto [num1, num2, operation] = get_path_parameters(session);
 }
 ```
 
-We've got the `request` object from the `session` object through the
-`get_request` function. Then we've got the `operation`, `num1` and `num2`
-parts of the url through the `get_path_parameter` function. Then we've converted
-the `num1` and `num2` values to float numbers.  
-Now we must prepare the result:  
+We've implemented a new function called `get_path_parameters` to get the values
+of labels in the url which is requested.
+In the `get_path_parameters` we've got the `request` object from the `session`
+object through the `get_request` function. Then we've got the `operation`,
+`num1` and `num2` values of the url through the `get_path_parameter` function.
+Then we've converted the `num1` and `num2` values to float numbers. Finally
+we've returned the values through a tuple object.  
+In the `get_handler` function we've called the `get_path_parameters` function
+and passed the `session` object as an argument. Then we've set the `num1`,
+`num2`, `operation` variable to the values of the `tuple` object which is
+returned. Did you see this feature before??
+It's amazing. This feature is called `structured binding` which was added in
+C++17 standard.  
+Now we must prepare the result of calculation:  
+
+`CalcResourceFactory.h`:
 
 ```C++
-void calc_handler(const shared_ptr<Session> session)
-{
-    //...
+//...
+class CalcResourceFactory : public IResourceFactory {
+  //...
+private:
 
-    auto result = string("{\"result\": ");
+  float calculate(float num1, float num2, string operation);
+  //...
+};
+```
 
-    if(operation == "add")
-    {
-        result +=  to_string(num1 + num2);
-    }
-    else if(operation == "subtract")
-    {
-        result += to_string(num1 - num2);
-    }
-    else if(operation == "multiply")
-    {
-        result += to_string(num1 * num2);
-    }
-    else if(operation == "divide")
-    {
-        result += to_string(num1 / num2);
-    }
+`CalcResourceFactory.cpp`:
 
-    result += "}";
+```C++
+float CalcResourceFactory::calculate(float num1, float num2, string operation) {
+  if(operation == "add") {
+      return num1 + num2;
+  }
+  else if(operation == "subtract") {
+      return num1 - num2;
+  }
+  else if(operation == "multiply") {
+      return num1 * num2;
+  }
+  else if(operation == "divide") {
+      return num1 / num2;
+  }
+}
+
+void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
+    const auto [num1, num2, operation] = get_path_parameters(session);
+    auto result = calculate(num1, num2, operation);
 }
 ```
 
-Then we've prepared the result in the format of `JSON` data structure. Finally
-we must send data to the client:  
+We've implemented a new function called `calculate` to calculate the result. The
+`calculate` function gets `num1`, `num2` and `operation` as arguments.  
+In the `get_handler` function, we've called the `calculate` function and set the
+`result` variable to returned value.  
+Now we must create a `JSON` data structure and put the result inside it in order
+to send to the user.  
+First copy the `json.hpp` library into `include` directory which you've
+downloaded in the previous steps.
+Then use `json` library to create `json` data structure:  
+
+`CalcResourceFactory.h`:
 
 ```C++
-void calc_handler(const shared_ptr<Session> session)
-{
-    //...
-    session->close(
-        OK, result, {{"Content-Length", to_string(result.size())}});
+//...
+class CalcResourceFactory : public IResourceFactory {
+  //...
+private:
+
+  string to_json(float result);
+  //...
+};
+```
+
+`CalcResourceFactory.cpp`:
+
+```C++
+#include <sstream>
+#include <iomanip>
+#include "json.hpp"
+
+using namespace nlohmann;
+
+string CalcResourceFactory::to_json(float result) {
+  ostringstream str_stream;
+  str_stream << result;
+  json jsonResult = {
+      {"result", str_stream.str()}
+  };
+  return jsonResult.dump();
+}
+
+void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
+  const auto [num1, num2, operation] = get_path_parameters(session);
+  auto result = calculate(num1, num2, operation);
+  auto content = to_json(result);
+}
+```
+
+At first we've included `sstream`, `iomanip` and `json.hpp` header files.
+We've implemented a new function called `to_json` to get the result of
+calculation and put it inside a `JSON` data structure. In the `to_json` function
+first we've formatted `result` variable through an `stringstream` object, then
+we've declared a new `jsonResult` variable from `json` class, and then we've
+initialized it with `JSON` data structure in an intuitive manner. This `JSON`
+data structure has a variable called `result` which is set to formatted `result`
+variable. Finally we've converted the `JSON` data structure to a `string` object
+and returned it.  
+In the `get_handler` function we've called the `to_json` function and passed the
+result of calculation as argument, then set the `content` variable to returned
+value.  
+Finally we must send data to the client:  
+
+`CalcResourceFactory.cpp`:
+
+```C++
+void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
+    const auto [num1, num2, operation] = get_path_parameters(session);
+    auto result = calculate(num1, num2, operation);
+    auto content = to_json(result);
+    session->close(OK, content,
+        {{"Content-Length", to_string(content.size())}});
 }
 ```
 
@@ -1050,36 +1224,214 @@ We've sent data through calling the `close` function of `session` object.
 `http` headers. We've passed `OK` as `http` status code, `result` JSON data as
 message body and a `std::mulitmap` object as `http` headers which contains a
 field called `Content-Length` specifying length of message body.  
-Now we must publish `calc_resource` :  
+Now it turns to implement `get_resource` function:  
+
+`CalcResourceFactory.cpp`:
 
 ```C++
-int main(const int, const char**)
-{
-    //...
-
-    auto settings = make_shared<Settings>();
-    settings->set_port(8080);
-    settings->set_default_header("Connection", "close");
-    settings->set_default_header( "Access-Control-Allow-Origin", "*");
-
-    Service service;
-    service.publish(calc_resource);
-    service.start(settings);
-
-    return EXIT_SUCCESS;
+shared_ptr<Resource> CalcResourceFactory::get_resource() const {
+  return _resource;
 }
 ```
 
-We've created an object from `Setting` class. This object is used to specify
+The `get_resource` function just returns `_resource` object.  
+Now we must publish calculator resource through a web service. The `restbed`
+framework has a class called `Settings` to initialize settings of a web service.  
+Now we're going to implement a new class in order to create settings of
+calculator web service. We start off by designing its interface, Create new
+`include/IServiceSettingsFactory.h` and implement this interface as follows:  
+
+```C++
+#pragma once
+
+#include <memory>
+#include <restbed>
+
+using namespace std;
+using namespace restbed;
+
+class IServiceSettingsFactory {
+
+public:
+
+  virtual shared_ptr<Settings> get_settings() const = 0;
+
+};
+```
+
+This interface is similar to the `IResourceFactory` interface. We can abstract
+these interfaces more, but it's beyond this course.  
+The `IServiceSettingsFactory` interface has an abstract function called
+`get_settings`, every concrete class which implements this interface must
+prepare and create web service settings and then deliver settings through the
+`get_settings` function.  
+Now it turns to creating a calculator web service settings factory class. Create
+new `include/CalcServiceSettingsFactory.h` header file as follows:  
+
+```C++
+#pragma once
+
+#include "IServiceSettingsFactory.h"
+
+class CalcServiceSettingsFactory : public IServiceSettingsFactory {
+
+public:
+
+    CalcServiceSettingsFactory();
+    shared_ptr<Settings> get_settings() const final;
+
+private:
+
+    std::shared_ptr<Settings> _settings;
+
+};
+```
+
+We've declared a new class called `CalcServiceSettingsFactory` which implements
+`IServiceSettingsFactory` interface. Also we've declared a constructor function
+and a member object called `_settings`. The member object is a `shared_ptr` from
+`Settings` class.  
+Let's create `CalcServiceSettingsFactory.cpp` source file and implement
+constructor function as follows:  
+
+```C++
+#include "CalcServiceSettingsFactory.h"
+
+CalcServiceSettingsFactory::CalcServiceSettingsFactory() {
+    _settings = make_shared<Settings>();
+    _settings->set_port(8080);
+    _settings->set_default_header("Connection", "close");
+    _settings->set_default_header( "Access-Control-Allow-Origin", "*");
+}
+```
+
+We've created an object from `Settings` class. This object is used to specify
 web service settings. We've set port number and two default `http` headers
 through this object. `Access-Control-Allow-Origin` headers is set to `*` in
 order to prevent `CORS` errors, for further information about this error you can
 read
 [this article](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).  
-Then we've created an object from the `Service` class and published the
-`calc_resource` through calling the `publish` function. Finally we've started
-the service.  
-Now we must build the `calculator_API.cpp` file.
+Now implement `get_settings` function as follows:  
+
+```C++
+shared_ptr<Settings> CalcServiceSettingsFactory::get_settings() const {
+    return _settings;
+}
+```
+
+The `get_settings` function only returns the `_settings` object.  
+Now we must create the calculator web service. The `restbed` framework has a
+class called `Service` which helps us to create web services and publish
+resources. We're going to implement a new class to implement calculator web
+service through `Service` class.  
+Let's start by designing the interface. Create new `include/IService.h` header
+file and implement `IService` interface as follows:  
+
+```C++
+#pragma once
+
+class IService {
+
+public:
+
+  virtual void start() = 0;
+
+};
+```
+
+We've declared an `IService` interface. Inside the `IService` interface we've
+declared an abstract function called `start`. Every concrete service class which
+implements this interface must get resources and settings objects and then
+initialize a web service, and when the `start` function is called, it must
+ignite the web service.  
+Let's implement the concrete calculator service class. Create a new
+`include\CalcService.h` header file and implement `CalcService` class as
+follows:
+
+```C++
+#pragma once
+
+#include "IService.h"
+
+#include "IResourceFactory.h"
+#include "IServiceSettingsFactory.h"
+
+class CalcService : public IService {
+
+public:
+
+    CalcService(
+        shared_ptr<IResourceFactory> resource_factory,
+        shared_ptr<IServiceSettingsFactory> settings_factory);
+    void start() final;
+
+private:
+
+    Service _service;
+    shared_ptr<IServiceSettingsFactory> _settings_factory;
+
+};
+```
+
+‍‍The `CalcService` class‍‍‍‍ implements the `IService` interface. It has two member
+objects, an object from the `Service` class called `_service` and a `shared_ptr`
+object from `IServiceSettingsFactory` interface called `_settings_factory`. Also
+it has a constructor function which gets two interfaces, `IResourceFactory` and
+`IServiceSettingsFactory` interfaces.  
+Now Let's start by implementing the constructor function. Create
+a `CalcService.cpp` resource file and implement the constructor function as
+follows:  
+
+```C++
+#include "CalcService.h"
+
+CalcService::CalcService(
+        shared_ptr<IResourceFactory> resource_factory,
+        shared_ptr<IServiceSettingsFactory> setting_factory) {
+    _settings_factory = settings_factory;
+    _service.publish(resource_factory->get_resource());
+}
+```
+
+We've initialized the `_settings_factory` member object with `settings_factory`
+argument. Then We've got the calculator resource object from the
+`resource_factory` object, and finally we've published the calculator resource
+through calling the `publish` function of the `_service` object.  
+Now it turns to implementing the `start` function:  
+
+```C++
+void CalcService::start() {
+    _service.start(_settings_factory->get_settings());
+}
+```
+
+We've called the `get_settings` function of `_settings_factory` to get the
+`Settings` object, finally we've passed the returned object to the start
+function.  Through calling the `start` function calculator web service will be
+started.  
+Now it's time to connect classes together. Create a new `main.cpp` file and
+implement the `main` function as follows:
+
+```C++
+#include "CalcResourceFactory.h"
+#include "CalcServiceSettingsFactory.h"
+#include "CalcService.h"
+
+int main(const int, const char**)
+{
+  auto resource_factory = make_shared<CalcResourceFactory>();
+  auto settings_factory = make_shared<CalcServiceSettingsFactory>();
+  CalcService service {resource_factory, settings_factory};
+  service.start();
+  
+  return EXIT_SUCCESS;
+}
+```
+
+It's very simple. As you see if software is developed in a modular manner,
+everything becomes simple, beautiful and self expressive.  
+Congratulations. You did it!  
+Let's compile and build the calculator web API project.  
 
 ### build calculator Back-end
 
@@ -1089,11 +1441,16 @@ We're going to build calculator back-end through `cmake`. Create
 ```CMAKE
 cmake_minimum_required(VERSION 3.0)
 
-project(calculator_API)
+project(CalculatorAPI)
 
-add_executable(calculator_API calculator_API.cpp)
-target_link_libraries(calculator_API restbed)
-set_property(TARGET calculator_API PROPERTY CXX_STANDARD 17)
+add_executable(CalculatorAPI
+    main.cpp
+    CalcResourceFactory.cpp
+    CalcService.cpp
+    CalcServiceSettingsFactory.cpp)
+target_link_libraries(CalculatorAPI restbed)
+target_include_directories(CalculatorAPI PUBLIC ${CMAKE_SOURCE_DIR}/include)
+set_property(TARGET CalculatorAPI PROPERTY CXX_STANDARD 17)
 ```
 
 Now you can build project through running the following command in the terminal:  
@@ -1106,7 +1463,7 @@ cmake --build calculator_back-end/build --config Release --target all
 Now you can run calculator API through running following command in the
 terminal:  
 
-`calculator_back-end/build/calculator_API`
+`calculator_back-end/build/CalculatorAPI`
 
 Congratulations!  
-`calculator_API` is completed, Now you can work with calculator.
+The `calculator_back-end` is completed, Now you can work with calculator.
