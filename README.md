@@ -845,9 +845,8 @@ need a C++ JSON Library. There are a lot of JSON libraries, We’ve selected
 
 ### What is `JSON library for modern C++`
 
-It's a single header JSON library for C++ programming language. It's a single
-header JSON library for C++ programming language. You’ll see It has an intuitive
-syntax.  
+It's a single header JSON library for C++ programming language. You’ll see It
+has an intuitive syntax.  
 Also we need a cross platform build system which enables us to build calculator
 web API. We’re going to use cmake as a build system.  
 
