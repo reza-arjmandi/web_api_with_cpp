@@ -32,12 +32,12 @@ two parts:
 * calculator_front-end
 * calculator_back-end
 
-In the first section I will use [`React`](https://reactjs.org/) to implement the
-calculator web interface and in the second section I will use the
+In the first section I will use [`React`](https://reactjs.org/) to implement
+the calculator web interface and in the second section I will use the
 [`restbed`](https://github.com/Corvusoft/restbed) `C++` framework to implement
-calculator API.  
+calculator web API.  
 Through this course you will be familiar with Single-page applications,
-`JavaScript` frameworks and rest api.
+`JavaScript` frameworks and `REST` API.
 Let’s start the front-end section.
 
 ## calculator Front-end
@@ -59,8 +59,8 @@ browser.
 
 ### What is `npm`
 
-`npm` is a tool to download and install `Node.js` programs, plugins, modules and
-so on.
+`npm` is a tool to download and install `Node.js` programs, plugins, modules
+and so on.
 
 ### Install `Node.js` and `npm`
 
@@ -77,11 +77,11 @@ If successful, you should be able to get version:
 
 ### Create React App
 
-There are a few ways to use and set up `React`. Fortunately Facebook has created
-`Create React App`, a tool that brings everything you need to build a `React`
-app. It will create a live development server and use Webpack to automatically
-compile React and JSX.  
-Run the following command in the terminal to create a new react app.  
+There are a few ways to use and set up `React`. Fortunately Facebook has
+created `Create React App`, a tool that brings everything you need to build a
+`React` app. It will create a live development server and use `Webpack` to
+automatically compile `React` and `JSX`.  
+Run the following command in the terminal to create a new `React` app.  
 
 ```sh
 mkdir web_api_with_cpp
@@ -89,21 +89,21 @@ cd web_api_with_cpp
 npx create-react-app calculator_front-end
 ```  
 
-Once that finishes installing, move to the newly created directory and start the
-project.  
+Once that finishes installing, move to the newly created directory and start
+the project.  
 
 ```sh
 cd calculator_front-end
 npm start
 ```
 
-Once you run this command, a new window will popup at `localhost:3000` with your
-new `React` app.
+Once you run this command, a new window will popup at `localhost:3000` with
+your new `React` app.
 ![start React project](images/image1.png "start React project")
 
 If you look into the project structure, you'll see a `/public` and `/src`
-directory, along with the regular `node_modules`, `.gitignore`, `README.md`, and
-`package.json`.
+directory, along with the regular `node_modules`, `.gitignore`, `README.md`,
+and `package.json`.
 The `/src` directory will contain all `JavaScript` codes.
 In `/public`, our important file is `index.html`, which has a `root` div html
 element.  
@@ -111,10 +111,10 @@ In `React` you can create `components`, which are like custom, reusable HTML
 elements, to quickly and efficiently build user interfaces. React also has two
 interesting concepts called `state` and `props` which is used to store and
 handle data.  
-I'm going to design the user interface from bottom to up, I'm going to start off
-by designing a simple calculator button component.  
+I'm going to design the user interface from bottom to up, I'm going to start
+off by designing a simple calculator button component.  
 Now, make `src/CalculatorButton.js` file and implement `CalculatorButton`
-React component:  
+`React` component:  
 
 ```JavaScript
 import React from 'react';
@@ -129,17 +129,17 @@ function CalculatorButton(props) {
 export default CalculatorButton;
 ```
 
-At the first line we've imported React, then we've implemented the
-`CalculatorButton` React component, and finally we've exported it in order to be
-visible outside.  
+At the first line we've imported `React`, then we've implemented the
+`CalculatorButton` `React` component, and finally we've exported it in order to
+be visible outside.  
 We can implement `React` components through classes or simple functions, if a
-React component is implemented through functions, it must get an argument.
-React passes `props` of components through this argument.  
+`React` component is implemented through functions, it must get an argument.
+`React` passes `props` of components through this argument.  
 In the body function a simple `input` `html` tag is returned. This is `JSX`
 syntax, `JSX` stands for `JavaScript` and `XML`. Through the `JSX` feature we
 can use and combine `JavaScript` and `XML` codes together.  
 If you want to know how a `React` component can be used, you can modify
-`index.js` file as following:  
+`App.js` file as following:  
 
 ```JavaScript
 import React from 'react';
@@ -191,14 +191,14 @@ function CalculatorButton(props) {
 }
 ```
 
-We've got the `caption` attribute through `props` data structure and then set it
-to the `value` attribute of `input` tag.  
+We've got the `caption` attribute through `props` data structure and then set
+it to the `value` attribute of `input` tag.  
 Now you can see, the `caption` attribute of `CalculatorButton` is rendered:  
 ![CalculatorButton](images/image3.png "CalculatorButton")
 
 Now, It turns to designing all calculator buttons. Create
-`src/CalculatorPanel.js` file, implement ‍‍new `CalculatorPanel` `React` component
-as follows:  
+`src/CalculatorPanel.js` file, implement ‍‍new `CalculatorPanel` `React`
+component as follows:  
 
 ```JavaScript
 import React from 'react'
@@ -298,10 +298,11 @@ function CalculatorPanel(props) {
 ```
 
 We've set `className` attribute of `div` html tag element to
-`calculator-grid-container`, In React we must use `className` instead of `class`
-attribute in `HTML` tags, because `class` is a reserved word in `JavaScript`.  
-Now update the `CalculatorButton` component to use the `calculator-equal-button`
-style:
+`calculator-grid-container`, In `React` we must use `className` instead of
+`class` attribute in `HTML` tags, because `class` is a reserved word in
+`JavaScript`.  
+Now update the `CalculatorButton` component to use the
+`calculator-equal-button` style:
 
 ```JavaScript
 function CalculatorButton(props) {
@@ -317,13 +318,13 @@ function CalculatorButton(props) {
 
 We've set the `className` attribute to the `calculator-equal-button`, if
 `props.caption` equal to the `=`. This feature of React is called conditional
-rendering, through this feature we can use conditions in conjunction with `HTML`
-tags.  
+rendering, through this feature we can use conditions in conjunction with
+`HTML` tags.  
 Now you can see arranged calculator buttons in a grid is rendered:  
 ![CalculatorGrid](images/image5.png "CalculatorGrid")  
 
-Our calculator needs a display. Let's create `src/CalculatorDisplay.js` file and
-implement `CalculatorDisplay` component as follows:  
+Our calculator needs a display. Let's create `src/CalculatorDisplay.js` file
+and implement `CalculatorDisplay` component as follows:  
 
 ```JavaScript
 import React from 'react'
@@ -352,7 +353,6 @@ Now we must add the `CalculatorDisplay` component at the top of
 import CalculatorDisplay from './CalculatorDisplay'
 
 function CalculatorPanel(props) {
-  
   //...
 
   return(
@@ -495,9 +495,10 @@ We've changed captions array to buttons array, and every item of this array
 specified `text` and `handler` of buttons. Each handler is an arrow function
 which calls the buttons handler with proper arguments. Buttons handlers are
 passed through `props` data structure.  
-We've updated the `map` function, and the handler of the button is passed to the
-`CalculatorButton` component through the `onClick` attribute. `CalculatorButton`
-component must get the handler and call it when the button is clicked.  
+We've updated the `map` function, and the handler of the button is passed to
+the `CalculatorButton` component through the `onClick` attribute.
+`CalculatorButton` component must get the handler and call it when the button
+is clicked.  
 Now update the `CalculatorButton` component as follows:  
 
 ```JavaScript
@@ -514,30 +515,11 @@ function CalculatorButton(props) {
 }
 ```
 
-We've bound the `props.onClick` handler to the `onClick` event of `input` `HTML`
-tag, and it causes every time the button is clicked, `props.onClick` is called.  
-`Calculator` component must display proper values in the `CalculatorDisplay`
-component when it's handlers are called.
-At first `CalculatorDisplay` must be able to get its text from outside.  
-Now update `CalculatorDisplay` component as follows:  
-
-```JavaScript
-function CalculatorDisplay(props) {
-    return(
-        <input 
-            className="calculator-display" 
-            readOnly={true} 
-            value={props.text} 
-            />
-    );
-}
-```
-
-We've bound the `value` attribute of `input` `HTML` tag to the `props.text`. We
-can display new values through setting the `text` attribute of
-`CalculatorDisplay` from outside.  
-`Calculator` component must set and update the text of `CalculatorDisplay` every
-time which one of the calculator buttons is clicked.  
+We've bound the `props.onClick` handler to the `onClick` event of `input`
+`HTML` tag, and it causes every time the button is clicked, `props.onClick` is
+called.  
+The `Calculator` component must display proper values in the
+`CalculatorDisplay` component when it's handlers are called.
 Now update `Calculator` component as follows:  
 
 ```JavaScript
@@ -572,16 +554,15 @@ order to initialize the `state` object. `state` is a special object in `React`
 components.  
 `state` is similar to `props`, but it is private and fully controlled by the
 component. `state` objects can contain several independent variables.  
-In the `render` function we have set the `result` attribute of `CalculatorPanel`
-component to the `result` variable of `state` object.  
-Every time the state is updated, `React` renders the `CalculatorPanel` component
-in order to display new results.  
-Now update `CalculatorPanel` component in way that it gets the `result`
+In the `render` function we have set the `result` attribute of
+`CalculatorPanel` component to the `result` variable of `state` object.  
+Every time the state is updated, `React` renders the `CalculatorPanel`
+component in order to display new results.  
+Now update `CalculatorPanel` component in a way that it gets the `result`
 attribute and updates the `CalculatorDisplay` component:  
 
 ```JavaScript
 function CalculatorPanel(props) {
-  
   //...
   
   return(
@@ -629,15 +610,15 @@ class Calculator extends React.Component {
 }
 ```
 
-We've added new variables to `state` object, `numbers` array which has two empty
-strings, `numberIdx` variable which is set to `0`. All operations of this
-calculator are binary operations, which means operations need two numbers. We're
-going to store these two numbers in `numbers` array. `numberIdx` specifies which
-number the user has entered, first number or second number.  
-`numberHandler` is called when the user clicks on each number button, and
+We've added new variables to `state` object, `numbers` array which has two
+empty strings, `numberIdx` variable which is set to `0`. All operations of this
+calculator are binary operations, which means operations need two numbers.
+We're going to store these two numbers in `numbers` array. The `numberIdx`
+specifies which number the user has entered, first number or second number.  
+The `numberHandler` is called when the user clicks on each number button, and
 number is passed to the handler through the `number` argument. In this function
 we've updated the `numbers` array in `state` object.  
-Beer in mind, we must update `state` objects only through the `setState`
+Bear in mind, we must update `state` objects only through the `setState`
 function.  
 Now we're going to complete the implementation of `dotHandler` function:  
 
@@ -702,9 +683,9 @@ class Calculator extends React.Component {
 ```
 
 We've added a new `operation` variable to the `state` object in order to store
-operations the which user clicked.  
-`operationHandler` is called when of of these operations `+`, `-`, `*` and `/`
-is clicked. We've updated the `numberIdx` and  `operation` variable.  
+operations which user clicked.  
+The `operationHandler` is called when of of these operations `+`, `-`, `*` and
+`/` is clicked. We've updated the `numberIdx` and  `operation` variable.  
 Also when users click on `+` or `-` buttons which didn't enter any numbers
 before, then we add a `+` or `-` in front of the number. And if a user
 enters two numbers and then clicks on one of the operation buttons then we call
@@ -738,9 +719,9 @@ equalHandler() {
 ```
 
 We've supposed that an object is passed through `props` object called
-`calculatorApi`. Through this object we can call the calculator API. This object
-has a function called `calculate` which gets the first number, second number,
-operation and a handler as arguments.  
+`calculatorApi`. Through this object we can call the calculator API. This
+object has a function called `calculate` which gets the first number, second
+number, operation and a handler as arguments.  
 We've called this function in order to send numbers and operation to the
 Back-end API, when the result is gotten ready, the handler is called and the
 result is passed through the handler argument.  
@@ -756,7 +737,7 @@ clearHandler() {
 }
 ```
 
-`clearHandler` sets the `state` object to initial state.  
+The `clearHandler` sets the `state` object to initial state.  
 Now we must implement the `CalculatorApi` component. create
 `src/CalculatorApi.js` class as follows:  
 
@@ -772,9 +753,9 @@ class CalculatorApi {
 export default CalculatorApi;
 ```
 
-`CalculatorApi` is a simple `JavaScript` class, it's not a `React` component.
-As we need, `CalculatorApi` has a `calculate` function which gets two numbers,
-an operation and a handler.  
+The `CalculatorApi` is a simple `JavaScript` class, it's not a `React`
+component. As we need, `CalculatorApi` has a `calculate` function which gets
+two numbers, an operation and a handler.  
 Now implement `calculate` function as follows:  
 
 ```JavaScript
@@ -804,7 +785,7 @@ class CalculatorApi {
 }
 ```
 
-`calculate` function uses the `fetch` API in order to communicate
+The `calculate` function uses the `fetch` API in order to communicate
 with the calculator API. `CalculatorApi` also gets calculator API address
 thorough its `constructor` function.  
 We must create an object from `CalculatorApi` and pass it to the
@@ -826,9 +807,9 @@ function App() {
 ```  
 
 We've changed the `CalculatorPanel` component to `Calculator` component. And
-also we've created an object from the `CalculatorApi` component and passed it to
-the `Calculator` component through the `calculatorApi` attribute.  
-Congratulations.!  
+also we've created an object from the `CalculatorApi` component and passed it
+to the `Calculator` component through the `calculatorApi` attribute.  
+Congratulations!  
 You've completed the calculator front-end section. Now Let's dive into the
 calculator back-end section.  
 
@@ -838,9 +819,10 @@ We're going to use `restbed` C++ framework to implement calculator web API.
 
 ### What is `restbed`
 
-`restbed` is a C++11 framework which enables us to implement RESTful web APIs.  
-We're going to implement calculator web API in the form of a JSON web API. So we
-need a C++ JSON Library. There are a lot of JSON libraries, We’ve selected
+The `restbed` is a C++11 framework which enables us to implement RESTful web
+APIs.  
+We're going to implement calculator web API in the form of a JSON web API. So
+we need a C++ JSON Library. There are a lot of JSON libraries, We’ve selected
 `JSON library for modern C++`.
 
 ### What is `JSON library for modern C++`
@@ -858,8 +840,8 @@ test and package `C++` software on many platforms like `Windows`, `Linux` and
 
 ### Install `restbed`
 
-If you have a `Linux` machine, you can run the following command in the terminal
-to install `restbed`:  
+If you have a `Linux` machine, you can run the following command in the
+terminal to install `restbed`:  
 
 ```sh
 sudo apt-get update
@@ -882,8 +864,8 @@ If you have a linux machine, you might have `GCC`.  Also you can install
 
 ### Install `cmake`
 
-If you have a `Linux` machine, you can run the following command in the terminal
-to install `cmake`:  
+If you have a `Linux` machine, you can run the following command in the
+terminal to install `cmake`:  
 
 `sudo apt-get install cmake`
 
@@ -900,12 +882,12 @@ mkdir calculator_back-end
 ```
 
 The fundamental concept in any RESTful API is the resource. A resource is an
-object with a type, associated data, relationships to other resources, and a set
-of methods that operate on it. It is similar to an object instance in an
+object with a type, associated data, relationships to other resources, and a
+set of methods that operate on it. It is similar to an object instance in an
 object-oriented programming language, with the important difference that only a
-few standard methods are defined for the resource (corresponding to the standard
-HTTP GET, POST, PUT and DELETE methods), while an object instance typically has
-many methods. We can consider the calculator API as a resource.  
+few standard methods are defined for the resource (corresponding to the
+standard HTTP GET, POST, PUT and DELETE methods), while an object instance
+typically has many methods. We can consider the calculator API as a resource.  
 `restbed` framework has a class called `Resource`. `Resource` class helps us to
 implement resources in our RESTful API. For each resource we must declare an
 object from the `Resource` class, and then implement methods of resource which
@@ -941,15 +923,15 @@ public:
 
 We've created an `include` directory in order to place all `C++` header files
 inside it. Then we've implemented a class called `IResourceFactory`. The `I`
-letter in front of its name stands for interface, which means `IResourceFactory`
-is an interface class and all it's functions are abstract functions. Every
-resource factory class must implement this interface.
+letter in front of its name stands for interface, which means
+`IResourceFactory` is an interface class and all it's functions are abstract
+functions. Every resource factory class must implement this interface.
 This interface has an abstract function called `get_resource`. Every resource
 factory concrete class must prepare resource and finally deliver to the its
-customer through `get_resource` function, in more details means concrete classes
-must create an object from `Resource` class and then implement all functions
-which it needs then bind functions to the `Resource` object and finally return
-`Resource` object in the `get_resource` function.  
+customer through `get_resource` function, in more details means concrete
+classes must create an object from `Resource` class and then implement all
+functions which it needs then bind functions to the `Resource` object and
+finally return `Resource` object in the `get_resource` function.  
 Now Let's create a `CalcResourceFactory` class. Create
 `include/CalcResourceFactory.h` file:  
 
@@ -1013,7 +995,8 @@ must accept only float or integral numbers which specify calculator
 functionality operands.  
 Every `Resource` object must have a handler which is called when resource is
 requested by a client.  
-We can set method handler of `Resource` object through `set_method_handler` function:  
+We can set method handler of `Resource` object through `set_method_handler`
+function:  
 
 `CalcResourceFactory.h`:
 
@@ -1144,12 +1127,12 @@ void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
 }
 ```
 
-We've implemented a new function called `calculate` to calculate the result. The
-`calculate` function gets `num1`, `num2` and `operation` as arguments.  
-In the `get_handler` function, we've called the `calculate` function and set the
-`result` variable to returned value.  
-Now we must create a `JSON` data structure and put the result inside it in order
-to send to the user.  
+We've implemented a new function called `calculate` to calculate the result.
+The `calculate` function gets `num1`, `num2` and `operation` as arguments.  
+In the `get_handler` function, we've called the `calculate` function and set
+the `result` variable to returned value.  
+Now we must create a `JSON` data structure and put the result inside it in
+order to send to the user.  
 First copy the `json.hpp` library into `include` directory which you've
 downloaded in the previous steps.
 Then use `json` library to create `json` data structure:  
@@ -1194,16 +1177,16 @@ void CalcResourceFactory::get_handler(const shared_ptr<Session> session) {
 
 At first we've included `sstream`, `iomanip` and `json.hpp` header files.
 We've implemented a new function called `to_json` to get the result of
-calculation and put it inside a `JSON` data structure. In the `to_json` function
-first we've formatted `result` variable through an `stringstream` object, then
-we've declared a new `jsonResult` variable from `json` class, and then we've
-initialized it with `JSON` data structure in an intuitive manner. This `JSON`
-data structure has a variable called `result` which is set to formatted `result`
-variable. Finally we've converted the `JSON` data structure to a `string` object
-and returned it.  
-In the `get_handler` function we've called the `to_json` function and passed the
-result of calculation as argument, then set the `content` variable to returned
-value.  
+calculation and put it inside a `JSON` data structure. In the `to_json`
+function first we've formatted `result` variable through an `stringstream`
+object, then we've declared a new `jsonResult` variable from `json` class, and
+then we've initialized it with `JSON` data structure in an intuitive manner.
+This `JSON` data structure has a variable called `result` which is set to
+formatted `result` variable. Finally we've converted the `JSON` data structure
+to a `string` object and returned it.  
+In the `get_handler` function we've called the `to_json` function and passed
+the result of calculation as argument, then set the `content` variable to
+returned value.  
 Finally we must send data to the client:  
 
 `CalcResourceFactory.cpp`:
@@ -1235,7 +1218,8 @@ shared_ptr<Resource> CalcResourceFactory::get_resource() const {
 
 The `get_resource` function just returns `_resource` object.  
 Now we must publish calculator resource through a web service. The `restbed`
-framework has a class called `Settings` to initialize settings of a web service.  
+framework has a class called `Settings` to initialize settings of a web
+service.  
 Now we're going to implement a new class in order to create settings of
 calculator web service. We start off by designing its interface, Create new
 `include/IServiceSettingsFactory.h` and implement this interface as follows:  
@@ -1264,8 +1248,8 @@ The `IServiceSettingsFactory` interface has an abstract function called
 `get_settings`, every concrete class which implements this interface must
 prepare and create web service settings and then deliver settings through the
 `get_settings` function.  
-Now it turns to creating a calculator web service settings factory class. Create
-new `include/CalcServiceSettingsFactory.h` header file as follows:  
+Now it turns to creating a calculator web service settings factory class.
+Create new `include/CalcServiceSettingsFactory.h` header file as follows:  
 
 ```C++
 #pragma once
@@ -1288,8 +1272,8 @@ private:
 
 We've declared a new class called `CalcServiceSettingsFactory` which implements
 `IServiceSettingsFactory` interface. Also we've declared a constructor function
-and a member object called `_settings`. The member object is a `shared_ptr` from
-`Settings` class.  
+and a member object called `_settings`. The member object is a `shared_ptr`
+from `Settings` class.  
 Let's create `CalcServiceSettingsFactory.cpp` source file and implement
 constructor function as follows:  
 
@@ -1307,8 +1291,8 @@ CalcServiceSettingsFactory::CalcServiceSettingsFactory() {
 We've created an object from `Settings` class. This object is used to specify
 web service settings. We've set port number and two default `http` headers
 through this object. `Access-Control-Allow-Origin` headers is set to `*` in
-order to prevent `CORS` errors, for further information about this error you can
-read
+order to prevent `CORS` errors, for further information about this error you
+can read
 [this article](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).  
 Now implement `get_settings` function as follows:  
 
@@ -1339,9 +1323,9 @@ public:
 ```
 
 We've declared an `IService` interface. Inside the `IService` interface we've
-declared an abstract function called `start`. Every concrete service class which
-implements this interface must get resources and settings objects and then
-initialize a web service, and when the `start` function is called, it must
+declared an abstract function called `start`. Every concrete service class
+which implements this interface must get resources and settings objects and
+then initialize a web service, and when the `start` function is called, it must
 ignite the web service.  
 Let's implement the concrete calculator service class. Create a new
 `include\CalcService.h` header file and implement `CalcService` class as
@@ -1373,10 +1357,10 @@ private:
 ```
 
 ‍‍The `CalcService` class‍‍‍‍ implements the `IService` interface. It has two member
-objects, an object from the `Service` class called `_service` and a `shared_ptr`
-object from `IServiceSettingsFactory` interface called `_settings_factory`. Also
-it has a constructor function which gets two interfaces, `IResourceFactory` and
-`IServiceSettingsFactory` interfaces.  
+objects, an object from the `Service` class called `_service` and a
+`shared_ptr` object from `IServiceSettingsFactory` interface called
+`_settings_factory`. Also it has a constructor function which gets two
+interfaces, `IResourceFactory` and `IServiceSettingsFactory` interfaces.  
 Now Let's start by implementing the constructor function. Create
 a `CalcService.cpp` resource file and implement the constructor function as
 follows:  
@@ -1437,7 +1421,7 @@ Let's compile and build the calculator web API project.
 We're going to build calculator back-end through `cmake`. Create
 `calculator_back-end/CMakeLists.txt` file and copy following code into it:  
 
-```CMAKE
+```
 cmake_minimum_required(VERSION 3.0)
 
 project(CalculatorAPI)
@@ -1452,7 +1436,8 @@ target_include_directories(CalculatorAPI PUBLIC ${CMAKE_SOURCE_DIR}/include)
 set_property(TARGET CalculatorAPI PROPERTY CXX_STANDARD 17)
 ```
 
-Now you can build project through running the following command in the terminal:  
+Now you can build project through running the following command in the
+terminal:  
 
 ```sh
 cmake -Hcalculator_back-end -Bcalculator_back-end/build
